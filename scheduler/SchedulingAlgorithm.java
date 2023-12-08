@@ -2,7 +2,9 @@
 // the scheduling algorithm written by the user resides.
 // User modification should occur within the Run() function.
 
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -15,7 +17,7 @@ public class SchedulingAlgorithm {
   public static Results Run(int runtime, Vector processVector, Results result) {
     int i = 0;
     int comptime = 0;
-    Integer currentProcess = 0;    
+    Integer currentProcess = null;    
     int size = processVector.size();
     int completed = 0;
     int quantum = 200;
@@ -23,34 +25,34 @@ public class SchedulingAlgorithm {
     String resultsFile = "Summary-Processes";
     Queue<Integer> processQueue = new LinkedList<>();
     TreeMap<Integer, Integer> blockedList = new TreeMap<>();
+    sProcess process = null;
 
-    result.schedulingType = "Batch (Nonpreemptive)";
-    result.schedulingName = "First-Come First-Served";         
+    result.schedulingType = "Preemptive";
+    result.schedulingName = "Round-robin";         
 
     try {
-      PrintStream out = new PrintStream(new FileOutputStream(resultsFile));            
-
-      for (int j = 0; j < size; j++) { 
-        processQueue.add(j);
-      }
-
-      currentProcess = processQueue.poll();
-      if (currentProcess == null) {
-        result.compuTime = comptime;
-        out.close();
+      if (size == 0) {
+        result.compuTime = comptime;        
         return result;
       }
-      sProcess process = (sProcess) processVector.get(currentProcess);  
-      out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
+      PrintStream out = new PrintStream(new FileOutputStream(resultsFile));                  
 
       while (comptime < runtime) {           
+        for (int j = 0; j < size; j++) {
+          if (comptime == ((sProcess) processVector.get(j)).arrivalTime) {
+            blockedList.put(j, comptime);
+          }
+        }
         if ((quantumTime == quantum) && !(process.cpudone == process.cputime) && !(process.ioblocking == process.ionext)) {
           blockedList.put(currentProcess, comptime);
         }     
-        for (Entry<Integer, Integer> blockedProcess: blockedList.entrySet()) {
+
+        Iterator<Entry<Integer, Integer>> iterator = blockedList.entrySet().iterator();
+        while (iterator.hasNext()) {
+          Entry<Integer, Integer> blockedProcess = iterator.next();
           if (blockedProcess.getValue() <= comptime) {
             processQueue.add(blockedProcess.getKey());
-            blockedList.remove(blockedProcess.getKey());
+            iterator.remove();
           }
         }
 
@@ -60,8 +62,8 @@ public class SchedulingAlgorithm {
             comptime++;
             continue;
           }
-          out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
           process = (sProcess) processVector.get(currentProcess);  
+          out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
         }
 
         if (process.cpudone == process.cputime) {

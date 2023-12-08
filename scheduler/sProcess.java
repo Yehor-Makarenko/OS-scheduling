@@ -1,4 +1,5 @@
 public class sProcess {
+  public int arrivalTime = (int) (Math.random() * 100);
   public int cputime;
   public int ioblocking;
   public int ioblockingTime = 10;
