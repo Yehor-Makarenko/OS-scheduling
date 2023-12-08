@@ -17,6 +17,7 @@ public class Scheduling {
   private static int blockTime = 100;
   private static int blockStandardDev = 10;
   private static int maxRunTime = 1000;
+  private static int quantum = 200;
   private static ArrayList<Process> processVector = new ArrayList<>();
   private static Results result = new Results("null","null",0);
   private static String resultsFile = "Summary-Results";
@@ -58,6 +59,11 @@ public class Scheduling {
           StringTokenizer st = new StringTokenizer(line);
           st.nextToken();
           blockStandardDev = Common.s2i(st.nextToken());
+        }
+        if (line.startsWith("quantum")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          quantum = Common.s2i(st.nextToken());
         }
         if (line.startsWith("process")) {
           StringTokenizer st = new StringTokenizer(line);
@@ -127,7 +133,7 @@ public class Scheduling {
         i++;
       }
     }
-    result = SchedulingAlgorithm.run(maxRunTime, processVector, result);    
+    result = SchedulingAlgorithm.run(maxRunTime, quantum, processVector, result);    
     PrintStream out = null;
     try {
       out = new PrintStream(new FileOutputStream(resultsFile));
@@ -138,6 +144,7 @@ public class Scheduling {
       out.println("Standard Deviation For Execution Time: " + executionStandardDev);
       out.println("IO Blocking Time: " + blockTime);
       out.println("Standard Deviation For IO Blocking Time: " + blockStandardDev);
+      out.println("Quantum: " + quantum);
       out.println("\nProcess #\tArrival time\tCPU Time\tIO Blocking\tIO Blocking Time\tCPU Completed\tCPU Blocked");
       for (i = 0; i < processVector.size(); i++) {
         Process process = (Process) processVector.get(i);

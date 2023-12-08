@@ -1,12 +1,13 @@
 Scheduling Type: Preemptive
 Scheduling Name: Round-robin
-Simulation Run Time: 3646
+Simulation Run Time: 3980
 Execution Time: 1000
 Standard Deviation For Execution Time: 100
 IO Blocking Time: 100
 Standard Deviation For IO Blocking Time: 30
+Quantum: 10
 
 Process #	Arrival time	CPU Time	IO Blocking	IO Blocking Time	CPU Completed	CPU Blocked
-0					100 (ms)		1154 (ms)		100 (ms)		146 (ms)		1154 (ms)		11 times
-1					1000 (ms)		850 (ms)		300 (ms)		55 (ms)		850 (ms)		2 times
-2					1500 (ms)		850 (ms)		500 (ms)		55 (ms)		850 (ms)		1 times
+0					100 (ms)		1085 (ms)		100 (ms)		125 (ms)		1085 (ms)		10 times
+1					1000 (ms)		1085 (ms)		300 (ms)		125 (ms)		1085 (ms)		3 times
+2					1500 (ms)		1085 (ms)		500 (ms)		125 (ms)		1085 (ms)		2 times

@@ -12,12 +12,11 @@ import java.io.*;
 
 public class SchedulingAlgorithm {
 
-  public static Results run(int runTime, ArrayList<Process> processVector, Results result) {
+  public static Results run(int runTime, int quantum, ArrayList<Process> processVector, Results result) {
     int compTime = 0;
     Integer currentProcess = null;    
     int size = processVector.size();
     int completed = 0;
-    int quantum = 200;
     int quantumTime = 0;
     String resultsFile = "Summary-Processes";
     Queue<Integer> processQueue = new LinkedList<>();
