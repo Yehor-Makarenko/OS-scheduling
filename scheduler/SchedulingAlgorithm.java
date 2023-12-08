@@ -2,21 +2,18 @@
 // the scheduling algorithm written by the user resides.
 // User modification should occur within the Run() function.
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.Vector;
 import java.util.Map.Entry;
 import java.io.*;
 
 public class SchedulingAlgorithm {
 
-  public static Results Run(int runtime, Vector processVector, Results result) {
-    int i = 0;
-    int comptime = 0;
+  public static Results run(int runTime, ArrayList<Process> processVector, Results result) {
+    int compTime = 0;
     Integer currentProcess = null;    
     int size = processVector.size();
     int completed = 0;
@@ -25,32 +22,32 @@ public class SchedulingAlgorithm {
     String resultsFile = "Summary-Processes";
     Queue<Integer> processQueue = new LinkedList<>();
     TreeMap<Integer, Integer> blockedList = new TreeMap<>();
-    sProcess process = null;
+    Process process = null;
 
     result.schedulingType = "Preemptive";
     result.schedulingName = "Round-robin";         
 
     try {
       if (size == 0) {
-        result.compuTime = comptime;        
+        result.compTime = compTime;        
         return result;
       }
-      PrintStream out = new PrintStream(new FileOutputStream(resultsFile));                  
+      PrintStream out = new PrintStream(new FileOutputStream(resultsFile));           
 
-      while (comptime < runtime) {           
+      while (compTime < runTime) {           
         for (int j = 0; j < size; j++) {
-          if (comptime == ((sProcess) processVector.get(j)).arrivalTime) {
-            blockedList.put(j, comptime);
+          if (compTime == processVector.get(j).arrivalTime) {
+            blockedList.put(j, compTime);
           }
         }
-        if ((quantumTime == quantum) && !(process.cpudone == process.cputime) && !(process.ioblocking == process.ionext)) {
-          blockedList.put(currentProcess, comptime);
+        if ((quantumTime == quantum) && !(process.cpuDone == process.cpuTime) && !(process.ioBlocking == process.ioNext)) {
+          blockedList.put(currentProcess, compTime);
         }     
 
         Iterator<Entry<Integer, Integer>> iterator = blockedList.entrySet().iterator();
         while (iterator.hasNext()) {
           Entry<Integer, Integer> blockedProcess = iterator.next();
-          if (blockedProcess.getValue() <= comptime) {
+          if (blockedProcess.getValue() <= compTime) {
             processQueue.add(blockedProcess.getKey());
             iterator.remove();
           }
@@ -59,18 +56,18 @@ public class SchedulingAlgorithm {
         if (currentProcess == null) {
           currentProcess = processQueue.poll();
           if (currentProcess == null) {
-            comptime++;
+            compTime++;
             continue;
           }
-          process = (sProcess) processVector.get(currentProcess);  
-          out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
+          process = (Process) processVector.get(currentProcess);  
+          out.println("Process: " + currentProcess + " registered... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");
         }
 
-        if (process.cpudone == process.cputime) {
+        if (process.cpuDone == process.cpuTime) {
           completed++;
-          out.println("Process: " + currentProcess + " completed... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
+          out.println("Process: " + currentProcess + " completed... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");
           if (completed == size) {
-            result.compuTime = comptime;
+            result.compTime = compTime;
             out.close();
             return result;
           }
@@ -78,54 +75,54 @@ public class SchedulingAlgorithm {
           quantumTime = 0;
           currentProcess = processQueue.poll();
           if (currentProcess == null) {
-            comptime++;
+            compTime++;
             continue;
           }
-          process = (sProcess) processVector.get(currentProcess);          
-          out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");          
+          process = processVector.get(currentProcess);          
+          out.println("Process: " + currentProcess + " registered... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");          
         }      
 
-        if (process.ioblocking == process.ionext) {
-          out.println("Process: " + currentProcess + " I/O blocked... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
-          process.numblocked++;
-          process.ionext = 0;       
+        if (process.ioBlocking == process.ioNext) {
+          out.println("Process: " + currentProcess + " I/O blocked... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");
+          process.numBlocked++;
+          process.ioNext = 0;       
           quantumTime = 0;    
-          if (process.ioblockingTime > 0) {
-            blockedList.put(currentProcess, comptime + process.ioblockingTime);
+          if (process.ioBlockingTime > 0) {
+            blockedList.put(currentProcess, compTime + process.ioBlockingTime);
           } else {
             processQueue.add(currentProcess);
           }
           currentProcess = processQueue.poll();
           if (currentProcess == null) {
-            comptime++;
+            compTime++;
             continue;
           }
-          process = (sProcess) processVector.get(currentProcess);
-          out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");          
+          process = processVector.get(currentProcess);
+          out.println("Process: " + currentProcess + " registered... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");          
         }    
         
         if (quantumTime == quantum) {        
-          out.println("Process: " + currentProcess + " interrupted... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");
+          out.println("Process: " + currentProcess + " interrupted... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");
           quantumTime = 0;                    
           currentProcess = processQueue.poll();
           if (currentProcess == null) {
-            comptime++;
+            compTime++;
             continue;
           }
-          process = (sProcess) processVector.get(currentProcess);
-          out.println("Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + comptime + ")");          
+          process = processVector.get(currentProcess);
+          out.println("Process: " + currentProcess + " registered... (" + process.cpuTime + " " + process.ioBlocking + " " + process.cpuDone + " " + compTime + ")");          
         }
 
-        process.cpudone++;       
-        if (process.ioblocking > 0) {
-          process.ionext++;
+        process.cpuDone++;       
+        if (process.ioBlocking > 0) {
+          process.ioNext++;
         }
         quantumTime++;
-        comptime++;
+        compTime++;
       }
       out.close();
-    } catch (IOException e) { /* Handle exceptions */ }
-    result.compuTime = comptime;
+    } catch (IOException e) { }
+    result.compTime = compTime;
     return result;
   }
 }

@@ -1,15 +1,19 @@
 public class Process {
-  public int cputime;
-  public int ioblocking;
-  public int cpudone;
-  public int ionext;
-  public int numblocked;
+  public int arrivalTime;
+  public int cpuTime;
+  public int ioBlocking;
+  public int ioBlockingTime;
+  public int cpuDone;
+  public int ioNext;
+  public int numBlocked;
 
-  public Process(int cputime, int ioblocking, int cpudone, int ionext, int numblocked) {
-    this.cputime = cputime;
-    this.ioblocking = ioblocking;
-    this.cpudone = cpudone;
-    this.ionext = ionext;
-    this.numblocked = numblocked;
+  public Process (int arrivalTime, int cpuTime, int ioBlocking, int ioBlockingTime, int cpuDone, int ioNext, int numBlocked) {
+    this.arrivalTime = arrivalTime;
+    this.cpuTime = cpuTime;
+    this.ioBlocking = ioBlocking;
+    this.ioBlockingTime = ioBlockingTime;
+    this.cpuDone = cpuDone;
+    this.ioNext = ioNext;
+    this.numBlocked = numBlocked;
   } 	
 }
