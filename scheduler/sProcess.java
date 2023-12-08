@@ -1,6 +1,7 @@
 public class sProcess {
   public int cputime;
   public int ioblocking;
+  public int ioblockingTime = 10;
   public int cpudone;
   public int ionext;
   public int numblocked;
