@@ -128,8 +128,9 @@ public class Scheduling {
       }
     }
     result = SchedulingAlgorithm.run(maxRunTime, processVector, result);    
+    PrintStream out = null;
     try {
-      PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
+      out = new PrintStream(new FileOutputStream(resultsFile));
       out.println("Scheduling Type: " + result.schedulingType);
       out.println("Scheduling Name: " + result.schedulingName);
       out.println("Simulation Run Time: " + result.compTime);
